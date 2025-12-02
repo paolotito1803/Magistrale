@@ -1,11 +1,47 @@
-r1 = 1;
-r2 = 2;
-r3 = 3;
-r4 = 4;
+gamma = 1/4;
+beta = 1/8;
+delta = 1/4;
 
-P1 = (use, r1).P2;
-P2 = (task, r2).P1;
-Q1 = (use, r3).Q2;
-Q2 = (task, r4).Q1;
+Slot1 = (slot_p1, gamma).(slot_v1, beta).Slot2;
+Slot2 = (slot_p2, gamma).(slot_v2, beta).Slot3;
+Slot3 = (slot_p3, gamma).(slot_v3, beta).Slot4;
+Slot4 = (slot_p4, gamma).(slot_v4, beta).Slot5;
+Slot5 = (slot_p5, gamma).(slot_v5, beta).Slot6;
+Slot6 = (slot_p6, gamma).(slot_v6, beta).Slot7;
+Slot7 = (slot_p7, gamma).(slot_v7, beta).Slot8;
+Slot8 = (slot_p8, gamma).(slot_v8, beta).Slot9;
+Slot9 = (slot_p9, gamma).(slot_v9, beta).Slot10;
+Slot10 = (slot_p10, gamma).(slot_v10, beta).Slot11;
+Slot11 = (slot_p11, gamma).(slot_v11, beta).Slot12;
+Slot12 = (slot_p12, gamma).(slot_v12, beta).Slot13;
+Slot13 = (slot_p13, gamma).(slot_v13, beta).Slot14;
+Slot14 = (slot_p14, gamma).(slot_v14, beta).Slot15;
+Slot15 = (slot_p15, gamma).(slot_v15, beta).Slot16;
+Slot16 = (slot_p16, gamma).(slot_v16, beta).Slot17;
+Slot17 = (slot_p17, gamma).(slot_v17, beta).Slot18;
+Slot18 = (slot_p18, gamma).(slot_v18, beta).Slot19;
+Slot19 = (slot_p19, gamma).(slot_v19, beta).Slot20;
+Slot20 = (slot_p20, gamma).(slot_v20, beta).Slot21;
+Slot21 = (slot_p21, gamma).(slot_v21, beta).Slot22;
+Slot22 = (slot_p22, gamma).(slot_v22, beta).Slot23;
+Slot23 = (slot_p23, gamma).(slot_v23, beta).Slot24;
+Slot24 = (slot_p24, gamma).(slot_v24, beta).Slot25;
+Slot25 = (slot_p25, gamma).(slot_v25, beta).Slot26;
+Slot26 = (slot_p26, gamma).(slot_v26, beta).Slot27;
+Slot27 = (slot_p27, gamma).(slot_v27, beta).Slot28;
+Slot28 = (slot_p28, gamma).(slot_v28, beta).Slot29;
+Slot29 = (slot_p29, gamma).(slot_v29, beta).Slot30;
+Slot30 = (slot_p30, gamma).(slot_v30, beta).Slot31;
+Slot31 = (slot_p31, gamma).(slot_v31, beta).Slot32;
+Slot32 = (slot_p32, gamma).(slot_v32, beta).Slot1;
 
-P1 <use> Q1
+
+VU = (slot_v1, T).VU + (slot_v32, T).VU;
+
+// w:     99
+// w - 1: 01
+VF = (slot_v1, 99 * T).VF + (slot_v1, 01 * T).Delay + (slot_v32, T).VF;
+Delay = (delay, delta).VF + (slot_v32, T).VF;
+
+
+Slot1 <slot_v1, slot_v32> (VU <slot_v1, slot_v32> VF)
