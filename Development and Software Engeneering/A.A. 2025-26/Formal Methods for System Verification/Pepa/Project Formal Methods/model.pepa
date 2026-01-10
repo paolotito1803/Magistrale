@@ -1,6 +1,7 @@
 gamma = 1/4;
 beta = 1/8;
 delta = 1/4;
+w = 0.99;
 
 Slot1 = (slot_p1, gamma).(slot_v1, beta).Slot2;
 Slot2 = (slot_p2, gamma).(slot_v2, beta).Slot3;
@@ -35,13 +36,16 @@ Slot30 = (slot_p30, gamma).(slot_v30, beta).Slot31;
 Slot31 = (slot_p31, gamma).(slot_v31, beta).Slot32;
 Slot32 = (slot_p32, gamma).(slot_v32, beta).Slot1;
 
-
 VU = (slot_v1, T).VU + (slot_v32, T).VU;
 
-// w:     99
-// w - 1: 01
-VF = (slot_v1, 99 * T).VF + (slot_v1, 01 * T).Delay + (slot_v32, T).VF;
+VF = (slot_v1, w * beta).VF + (slot_v1, (1 - w) * beta).Delay + (slot_v32, T).VF;
 Delay = (delay, delta).VF + (slot_v32, T).VF;
 
-
 Slot1 <slot_v1, slot_v32> (VU <slot_v1, slot_v32> VF)
+
+// VU = (slot_v1, (1 - epsilon) * beta).VU + (slot_v1, epsilon * beta).Punish + (slot_v32, T).VU;
+// Punish = (punish, eta).Punish + (slot_v32, T).VU;
+
+// alpha = 0.9;
+// epsilon = 1 - alpha;
+// eta = 1/12;
