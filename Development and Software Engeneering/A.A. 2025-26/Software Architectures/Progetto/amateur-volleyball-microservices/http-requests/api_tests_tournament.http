@@ -1,0 +1,61 @@
+// To use environment variables open api_tests_users.http (in intellij)
+// at the top of the editor panel in dropdown menu that says "No Environment"
+// click it and select dev
+
+### LOGIN ADMIN
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{admin_email}}",
+  "password": "{{admin_password}}"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token);
+%}
+
+### 1. GET TEAM ID
+GET http://localhost:8080/api/teams
+Authorization: Bearer {{auth_token}}
+
+> {%
+    var team = response.body.find(t => t.coachId === "id_coach_1");
+    client.global.set("real_team_id", team.id);
+    client.log("Real Team UUID: " + team.id);
+%}
+
+### 2. GET MATCH ID
+GET http://localhost:8080/api/tournaments/Elemental%20Championship%202025
+Authorization: Bearer {{auth_token}}
+
+> {%
+    client.global.set("match_id", response.body.matches[0].matchId);
+%}
+
+### 3. ASSIGN STADIUM
+POST http://localhost:8080/api/tournaments/match/{{match_id}}/stadium
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "hostTeamId": "{{real_team_id}}"
+}
+
+### 4. VERIFY SEATS > 0
+GET http://localhost:8080/api/tournaments/match/{{match_id}}
+Authorization: Bearer {{auth_token}}
+
+> {%
+    client.assert(response.body.freeSeats > 0, "Seats are still 0!");
+%}
+
+### 5.CREATE TOURNAMENT
+POST http://localhost:8080/api/tournaments/create
+Content-Type: application/json
+Authorization: Bearer{{auth_token}}
+
+{
+  "tournamentName": "Bola",
+  "teams": ["Fire Drangons", "Ice Walkers", "Earth Golems", "Wind Flyers"]
+}

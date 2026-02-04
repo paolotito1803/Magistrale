@@ -1,0 +1,97 @@
+### 1. Login as ADMIN to get Token
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@volleyball.com",
+  "password": "admin_pass"
+}
+
+> {%
+    client.global.set("admin_token", response.body.token);
+    client.log("Admin Token: " + response.body.token);
+%}
+
+### 2. Login as COACH to get Token
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "coach1@mail.com",
+  "password": "pwd"
+}
+
+> {%
+    client.global.set("coach_token", response.body.token);
+    client.log("Coach Token: " + response.body.token);
+%}
+
+### 3. Login as VIEWER to get Token
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "viewer1@mail.com",
+  "password": "pwd"
+}
+
+> {%
+    client.global.set("viewer_token", response.body.token);
+    client.log("Viewer Token: " + response.body.token);
+%}
+
+### TESTING @RequireRole({"ADMIN", "COACH"}) on addPlayer
+
+### 4. [POSITIVE] ADMIN tries to add a player
+# Expected: 200 OK (Admin has role ADMIN)
+POST http://localhost:8080/api/teams/id_coach_1/players
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "name": "Admin Player",
+  "number": 90,
+  "role": "PLAYER"
+}
+
+> {%
+    client.test("Admin Request Successful", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 5. [POSITIVE] COACH tries to add a player to THEIR OWN team
+# Expected: 200 OK (Coach has role COACH and is owner of id_coach_1)
+POST http://localhost:8080/api/teams/id_coach_1/players
+Content-Type: application/json
+Authorization: Bearer {{coach_token}}
+
+{
+  "name": "Coach Player",
+  "number": 90,
+  "role": "SETTER"
+}
+
+> {%
+    client.test("Coach Request Successful", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### 6. [NEGATIVE] VIEWER tries to add a player
+# Expected: 403 Forbidden (Viewer has role VIEWER, forbidden by addPlayer)
+POST http://localhost:8080/api/teams/id_coach_1/players
+Content-Type: application/json
+Authorization: Bearer {{viewer_token}}
+
+{
+  "name": "Hacker Player",
+  "number": 91,
+  "role": "LIBERO"
+}
+
+> {%
+    client.test("Viewer Request Forbidden", function() {
+        client.assert(response.status === 403, "Viewer was not blocked! Security failed.");
+    });
+%}
