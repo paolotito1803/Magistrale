@@ -1,0 +1,8 @@
+rootProject.name = 'amateur-volleyball-microservices'
+
+include 'common'
+include 'teams-service'
+include 'tournament-service'
+include 'ticketing-service'
+include 'users-service'
+include 'api-gateway'
