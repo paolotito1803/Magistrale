@@ -1,0 +1,25 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' apply false
+    id 'io.spring.dependency-management' apply false
+}
+
+group = 'com.volleyball'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Let the microservices provide web things themselves, they do already if they use it anyway
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
+    compileOnly 'org.springframework:spring-web'
+
+    // 'api' so modules importing 'common' can see without redeclaring them
+    api 'com.fasterxml.jackson.core:jackson-annotations'
+    api 'org.springframework.boot:spring-boot-starter-aop'
+}
