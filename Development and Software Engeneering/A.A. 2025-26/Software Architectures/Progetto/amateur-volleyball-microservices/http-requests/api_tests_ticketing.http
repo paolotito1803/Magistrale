@@ -1,0 +1,67 @@
+// To use environment variables open api_tests_users.http (in intellij)
+// at the top of the editor panel in dropdown menu that says "No Environment"
+// click it and select dev
+
+### LOGIN ADMIN
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{admin_email}}",
+  "password": "{{admin_password}}"
+}
+
+> {%
+    client.global.set("admin_token", response.body.token);
+%}
+
+### GET TEAM ID
+GET http://localhost:8080/api/teams
+Authorization: Bearer {{admin_token}}
+
+> {%
+    var team = response.body.find(t => t.coachId === "id_coach_1");
+    client.global.set("real_team_id", team.id);
+%}
+
+### GET MATCH ID
+GET http://localhost:8080/api/tournaments/Elemental%20Championship%202025
+Authorization: Bearer {{admin_token}}
+
+> {%
+    client.global.set("match_id", response.body.matches[1].matchId);
+%}
+
+### ASSIGN STADIUM
+POST http://localhost:8080/api/tournaments/match/{{match_id}}/stadium
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "hostTeamId": "{{real_team_id}}"
+}
+
+### LOGIN VIEWER
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "viewer1@mail.com",
+  "password": "{{user_password}}"
+}
+
+> {%
+    client.global.set("viewer_token", response.body.token);
+    client.global.set("viewer_id", response.body.user.id);
+%}
+
+### BOOK TICKET
+POST http://localhost:8080/api/tickets/booking
+Content-Type: application/json
+Authorization: Bearer {{viewer_token}}
+
+{
+  "userId": "{{viewer_id}}",
+  "matchId": "{{match_id}}",
+  "numSeat": 105
+}

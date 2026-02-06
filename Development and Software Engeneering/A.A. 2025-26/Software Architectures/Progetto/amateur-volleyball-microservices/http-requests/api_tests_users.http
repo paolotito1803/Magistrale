@@ -1,0 +1,48 @@
+// To use environment variables open api_tests_users.http (in intellij)
+// at the top of the editor panel in dropdown menu that says "No Environment"
+// click it and select dev
+
+### 1. LOGIN AS ADMIN (GET TOKEN)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{admin_email}}",
+  "password": "{{admin_password}}"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token);
+    client.log("Admin Token: " + response.body.token);
+%}
+
+### 2. GET ALL USERS
+GET http://localhost:8080/api/users
+Authorization: Bearer {{auth_token}}
+
+### 3. CREATE NEW COACH
+POST http://localhost:8080/api/users/create
+Content-Type: application/json
+
+{
+    "username" : "Toad",
+    "surname" : "Barman",
+    "email": "toad@mail.com",
+    "password" : "{{user_password}}",
+    "role" : "COACH"
+}
+
+### 4. UPDATE PREVIOUS VIEWER
+#Change with id from step 5
+PUT http://localhost:8080/api/users/update/id_viewer_1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "surname" : "Verdi1"
+}
+
+### 5. FILTER ROLE
+# Change the role if you want to see other users
+GET http://localhost:8080/api/users/export/VIEWER
+Authorization: Bearer {{auth_token}}
