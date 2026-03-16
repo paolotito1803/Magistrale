@@ -3,8 +3,8 @@ import scala.annotation.tailrec
 
 // Interleave
 def interleave[A](xs: List[A], ys: List[A]): List[A] = (xs, ys) match {
-  case (nil, b) => b
-  case (a, nil) => a
+  case (Nil, b) => b
+  case (a, Nil) => a
   case (hx :: tx, hy :: ty) => hx :: hy :: interleave(tx, ty)
 }
 
@@ -62,7 +62,7 @@ def myDropList[A](k: Int, list: List[A]): List[A]= (k, list) match {
 
 def myAppend[A](list1: List[A], list2: List[A]): List[A] = list1 match {
   case Nil => list2
-  case h :: t => myAppend(t, list2)
+  case h :: t => h :: myAppend(t, list2)
 }
 
 // Frequqnecies
