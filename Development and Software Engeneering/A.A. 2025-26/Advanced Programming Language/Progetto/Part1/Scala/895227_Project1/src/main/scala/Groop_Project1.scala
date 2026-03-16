@@ -69,7 +69,7 @@ def myAppend[A](list1: List[A], list2: List[A]): List[A] = list1 match {
 def frequencies[A](list: List[A]): List[(A, Int)] = {
   @tailrec
   def updateFreq(remaining: List[A], counterf: List[(A, Int)]): List[(A, Int)] = remaining match{
-    case Nil => counterf.reverse
+    case Nil => counterf
     case h :: t => updateFreq(t, increment(h, counterf))
   }
 
