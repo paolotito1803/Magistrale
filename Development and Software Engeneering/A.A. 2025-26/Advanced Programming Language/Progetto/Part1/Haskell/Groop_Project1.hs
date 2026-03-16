@@ -10,31 +10,31 @@ interleave (x:xs) (y:ys) = x : y : interleave xs ys
 chunks :: Int -> [a] -> [[a]]
 chunks n _ | n <=0 = []
 chunks n _ [] = []
-chunks n xs = Mytake n xs : chunks n (Mydrop n xs)
+chunks n xs = mytake n xs : chunks n (mydrop n xs)
     where
         -- custimuzation of take and drop functions
-        Mytake _ [] = []
-        Mytake k (x:xs) | k > 0 = x : Mytake (k-1) xs
+        mytake _ [] = []
+        mytake k (x:xs) | k > 0 = x : mytake (k-1) xs
                 | otherwise = []
 
-        Mydrop _ [] = []
-        Mydrop k list@(x:xs) | k > 0 = Mydrop (k-1) xs
+        mydrop _ [] = []
+        mydrop k list@(x:xs) | k > 0 = mydrop (k-1) xs
                     | otherwise = []
 
 -- Rotate
 rotate :: Int -> [a] -> [a]
 rotate _ [] = []
 --union of the two list in the opposite order
-rotate n xs = MydropRotate m xs ++ MytakeRotate m xs
+rotate n xs = mydropRotate m xs ++ mytakeRotate m xs
     where
         m = n `mod` length xs
         -- custimuzation of take and drop functions
-        MytakeRotate _ [] = []
-        MytakeRotate k (x:xs) | k > 0 = x : MytakeRotate (k-1) xs
+        mytakeRotate _ [] = []
+        mytakeRotate k (x:xs) | k > 0 = x : mytakeRotate (k-1) xs
                 | otherwise = []
 
-        MydropRotate _ [] = []
-        MydropRotate k list@(x:xs) | k > 0 = MydropRotate (k-1) xs
+        mydropRotate _ [] = []
+        mydropRotate k list@(x:xs) | k > 0 = mydropRotate (k-1) xs
                     | otherwise = list
 
 -- Frequencies
