@@ -1,49 +1,44 @@
-@fmodule Project1 do
+defmodule Project1 do
 
-// Interleave
-def interleave(xs, ys)
-def Interleave([], ys), do: ys
-def Interleave(xs, []), do xs
-def Interleave([hx | tx], [hy | ty]) do [hx, hy | Interleave(tx, ty)]
-end
+  #Interleave
+  def interleave([], ys), do: ys
+  def interleave(xs, []), do: xs
+  def interleave([hx | tx], [hy | ty]), do: [hx, hy | interleave(tx, ty)]
 
-// Chunks
-def chunks(n, list)
-def chunks(n, _list) when n <= 0, do: []
-def chunks(_n, []), do []
-def chunks(n, list) do
+  #Chunks
+  def chunks(n, _list) when n <= 0, do: []
+  def chunks(_n, []), do: []
+  def chunks(n, list) do
     first_chunk = my_take(n, list)
     rest_of_list = my_drop(n, list)
     [first_chunk | chunks(n, rest_of_list)]
   end
 
-  // Rotate
-  def rotate(n, list)
+  #Rotate
   def rotate(_n, []), do: []
   def rotate(n, list) do
     len = my_length(list)
     # Handle negative rotations to match Haskell's 'mod' behavior
     eff_n = my_mod(n, len)
-    
+
     left = my_take(eff_n, list)
     right = my_drop(eff_n, list)
-    
+
     # Combine the parts: right part moves to the front
     my_append(right, left)
   end
 
-  // Frequencies
-  def frequencies(list)
+  #Frequencies
   def frequencies(list), do: update_freq(list, [])
 
   # Custom take: returns first n elements
-  defp my_take(0, _), do: []
-  defp my_take(_, []), do: []
+  defp mytake(0, ), do: []
+  defp mytake(, []), do: []
   defp my_take(n, [h | t]), do: [h | my_take(n - 1, t)]
 
   # Custom drop: removes first n elements
   defp my_drop(0, list), do: list
-  defp my_drop(_, []), do: []
+  defp mydrop(, []), do: []
   defp my_drop(n, [_h | t]), do: my_drop(n - 1, t)
 
   # Custom length: counts elements in the list
