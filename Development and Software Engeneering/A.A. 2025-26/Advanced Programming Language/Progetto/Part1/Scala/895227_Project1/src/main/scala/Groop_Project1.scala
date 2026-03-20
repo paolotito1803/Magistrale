@@ -84,10 +84,16 @@ def frequencies[A](list: List[A]): List[(A, Int)] = {
 }
 
 
-// Part 3: Cesar Cipher
+//Part 3: Cesar Cipher
 object CesarCipher {
+
+  // 1. ENCODE / DECODE
   def cesar(n: Int, text: String): String = {
-    text.map(c => shiftChar(n, c))
+    def loop(chars: List[Char]): List[Char] = chars match {
+      case Nil => Nil
+      case head :: tail => shiftChar(n, head) :: loop(tail)
+    }
+    loop(text.toList).mkString
   }
 
   private def shiftChar(n: Int, c: Char): Char = {
@@ -101,15 +107,26 @@ object CesarCipher {
     (base + effN).toChar
   }
 
-  // Crack
+  // 2. CRACK
   def crack(text: String): String = {
-    val shifts = (0 to 25).toList
-    val scores = shifts.map(s => countE(cesar(s, text)))
-    val bestShift = shifts(scores.indexOf(scores.max))
-    cesar(bestShift, text)
+    def findBest(currentS: Int, bestS: Int, maxCount: Int): Int = {
+      if (currentS > 25) bestS
+      else {
+        val currentCount = countE(cesar(currentS, text))
+        if (currentCount > maxCount) findBest(currentS + 1, currentS, currentCount)
+        else findBest(currentS + 1, bestS, maxCount)
+      }
+    }
+    cesar(findBest(0, 0, -1), text)
   }
 
   private def countE(text: String): Int = {
-    text.toLowerCase.count(_ == 'e')
+    def loop(chars: List[Char]): Int = chars match {
+      case Nil => 0
+      case head :: tail => 
+        val isE = if (head == 'e' || head == 'E') 1 else 0
+        isE + loop(tail)
+    }
+    loop(text.toList)
   }
-} 
+}

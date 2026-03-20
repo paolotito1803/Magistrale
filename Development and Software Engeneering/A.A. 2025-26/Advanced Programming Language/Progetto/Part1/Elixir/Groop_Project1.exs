@@ -32,13 +32,13 @@ defmodule Project1 do
   def frequencies(list), do: update_freq(list, [])
 
   # Custom take: returns first n elements
-  defp mytake(0, ), do: []
-  defp mytake(, []), do: []
+  defp my_take(0, _list), do: []
+  defp my_take(_n, []), do: []
   defp my_take(n, [h | t]), do: [h | my_take(n - 1, t)]
 
   # Custom drop: removes first n elements
   defp my_drop(0, list), do: list
-  defp mydrop(, []), do: []
+  defp my_drop(_n, []), do: []
   defp my_drop(n, [_h | t]), do: my_drop(n - 1, t)
 
   # Custom length: counts elements in the list
@@ -73,36 +73,41 @@ end
 
 # Part 3: Cesar Cipher
 defmodule Cesar do
-  def cesar(text, n) do
-    text
-    |> String.to_charlist()
-    |> Enum.map(fn char -> shift_char(char, n) end)
-    |> List.to_string()
-  end
-  defp shift_char(c, n) when c >= ?a and c <= ?z, do: rem_shift(c, n, ?a)
-  defp shift_char(c, n) when c >= ?A and c <= ?Z, do: rem_shift(c, n, ?A)
+  # 1. ENCODE
+  def cesar(text, n), do: do_cesar(String.to_charlist(text), n) |> List.to_string()
+
+  defp do_cesar([], _n), do: []
+  defp do_cesar([h | t], n), do: [shift_char(h, n) | do_cesar(t, n)]
+
+  defp shift_char(c, n) when c >= ?a and c <= ?z, do: rotate(c, n, ?a)
+  defp shift_char(c, n) when c >= ?A and c <= ?Z, do: rotate(c, n, ?A)
   defp shift_char(c, _n), do: c
 
-  defp rem_shift(c, n, base) do
-    # Correct modulo for negative shifts
+  defp rotate(c, n, base) do
     eff_n = Integer.mod(c - base + n, 26)
     base + eff_n
   end
 
   # 2. CRACK
   def crack(text) do
-    # Generate all 26 versions
-    candidates = for s <- 0..25, do: {s, caesar(text, s)}
-
-    # Find the one with the highest frequency of 'e'
-    {best_s, _} = Enum.max_by(candidates, fn {_, t} -> count_e(t) end)
-    caesar(text, best_s)
+    best_s = find_best_shift(text, 0, 0, -1)
+    cesar(text, best_s)
   end
 
-  defp count_e(text) do
-    text
-    |> String.downcase()
-    |> String.to_charlist()
-    |> Enum.count(fn c -> c == ?e end)
+  defp find_best_shift(_text, 26, best_s, _max), do: best_s
+  defp find_best_shift(text, current_s, best_s, max) do
+    count = count_e(String.to_charlist(text), current_s)
+    if count > max do
+      find_best_shift(text, current_s + 1, current_s, count)
+    else
+      find_best_shift(text, current_s + 1, best_s, max)
+    end
+  end
+
+  defp count_e([], _s), do: 0
+  defp count_e([h | t], s) do
+    shifted_h = shift_char(h, s)
+    is_e = if (shifted_h == ?e or shifted_h == ?E), do: 1, else: 0
+    is_e + count_e(t, s)
   end
 end
