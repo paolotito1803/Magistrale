@@ -69,3 +69,40 @@ defmodule Project1 do
     end
   end
 end
+
+
+# Part 3: Cesar Cipher
+defmodule Cesar do
+  def cesar(text, n) do
+    text
+    |> String.to_charlist()
+    |> Enum.map(fn char -> shift_char(char, n) end)
+    |> List.to_string()
+  end
+  defp shift_char(c, n) when c >= ?a and c <= ?z, do: rem_shift(c, n, ?a)
+  defp shift_char(c, n) when c >= ?A and c <= ?Z, do: rem_shift(c, n, ?A)
+  defp shift_char(c, _n), do: c
+
+  defp rem_shift(c, n, base) do
+    # Correct modulo for negative shifts
+    eff_n = Integer.mod(c - base + n, 26)
+    base + eff_n
+  end
+
+  # 2. CRACK
+  def crack(text) do
+    # Generate all 26 versions
+    candidates = for s <- 0..25, do: {s, caesar(text, s)}
+
+    # Find the one with the highest frequency of 'e'
+    {best_s, _} = Enum.max_by(candidates, fn {_, t} -> count_e(t) end)
+    caesar(text, best_s)
+  end
+
+  defp count_e(text) do
+    text
+    |> String.downcase()
+    |> String.to_charlist()
+    |> Enum.count(fn c -> c == ?e end)
+  end
+end

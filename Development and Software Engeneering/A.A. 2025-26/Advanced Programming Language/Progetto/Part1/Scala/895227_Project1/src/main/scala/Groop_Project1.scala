@@ -82,3 +82,34 @@ def frequencies[A](list: List[A]): List[(A, Int)] = {
 
   updateFreq(list, Nil)
 }
+
+
+// Part 3: Cesar Cipher
+object CesarCipher {
+  def cesar(n: Int, text: String): String = {
+    text.map(c => shiftChar(n, c))
+  }
+
+  private def shiftChar(n: Int, c: Char): Char = {
+    if (c >= 'a' && c <= 'z') rotate(n, c, 'a')
+    else if (c >= 'A' && c <= 'Z') rotate(n, c, 'A')
+    else c
+  }
+
+  private def rotate(n: Int, c: Char, base: Char): Char = {
+    val effN = ((c - base + n) % 26 + 26) % 26
+    (base + effN).toChar
+  }
+
+  // Crack
+  def crack(text: String): String = {
+    val shifts = (0 to 25).toList
+    val scores = shifts.map(s => countE(cesar(s, text)))
+    val bestShift = shifts(scores.indexOf(scores.max))
+    cesar(bestShift, text)
+  }
+
+  private def countE(text: String): Int = {
+    text.toLowerCase.count(_ == 'e')
+  }
+} 

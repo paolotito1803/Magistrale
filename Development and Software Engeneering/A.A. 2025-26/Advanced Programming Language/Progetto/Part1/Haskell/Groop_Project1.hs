@@ -49,3 +49,32 @@ frequencies xs = helpFrequencies xs []
         updateCount item ((k, v):rest)
             | item == k = (k, v + 1) : rest
             | otherwise = (k, v) : updateCount item rest
+
+
+-- Part 3: Cesar Cipher
+cesar :: Int -> String -> String
+    cesar n text = map(shiftChar n) text
+
+    shiftChar :: Int -> Char -> Char
+        shiftChar n c
+            | 'a' <= c && c <= 'z' = rotateChar n 'a' n c
+            | 'A' <= c && c <= 'Z' = rotateChar n 'A' n c
+            | otherwise = c
+        where
+            rotateChar base n c =
+                let ordC = fromEnum c - fromEnum base
+                effN = (ordC + n) `mod` 26
+                in toEnum (effN + base)
+
+    -- Crack
+    crack :: String -> String
+    crack text = cesar(bestShift text) text
+
+    bestShift :: String -> Int
+    bestShift text = findIndex [countChar 'e' (cesar n text) | s <- [0..25]]
+    
+    couterChar :: Char -> String -> Int
+    countChar c text = length [x | x <- text, x == c]
+
+    dinfMaxIndex :: [Int] -> Int
+    findMaxIndex xs = head [i| (x, i) <- zip xs [0..], x == maximum xs]
