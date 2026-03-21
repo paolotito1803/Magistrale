@@ -19,7 +19,7 @@ chunks n xs = mytake n xs : chunks n (mydrop n xs)
 
         mydrop _ [] = []
         mydrop k list@(x:xs) | k > 0 = mydrop (k-1) xs
-                    | otherwise = []
+                    | otherwise = list
 
 -- Rotate
 rotate :: Int -> [a] -> [a]
@@ -43,7 +43,7 @@ frequencies xs = helpFrequencies xs []
     where
         --takes the list and a counter
         helpFrequencies [] count = count
-        helperFrequencies (x:xs) count = helperFrequencies xs (updateCount x count)
+        helpFrequencies (x:xs) count = helpFrequencies xs (updateCount x count)
         --updates the count of the element in the list and the current counter
         updateCount item [] = [(item, 1)]
         updateCount item ((k, v):rest)
