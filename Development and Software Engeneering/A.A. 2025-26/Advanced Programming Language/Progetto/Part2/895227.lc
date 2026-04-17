@@ -3,26 +3,26 @@
 -- ==============================================================================
 
 -- Basic Church Encodings required for the exercises
-let TRUE = \x. \y. x
-let FALSE = \x. \y. y
-let NOT = \b. b FALSE TRUE
+TRUE = \x. \y. x
+FALSE = \x. \y. y
+NOT = \b. b FALSE TRUE
 
-let ZERO = \f. \x. x
-let SUCC = \n. \f. \x. f (n f x)
-let IS_ZERO = \n. n (\x. FALSE) TRUE
+ZERO = \f. \x. x
+SUCC = \n. \f. \x. f (n f x)
+IS_ZERO = \n. n (\x. FALSE) TRUE
 
 -- Predecessor (standard Church encoding)
-let PRED = \n. \f. \x. n (\g. \h. h (g f)) (\u. x) (\u. u)
+PRED = \n. \f. \x. n (\g. \h. h (g f)) (\u. x) (\u. u)
 
 -- Subtraction (m - n)
-let SUB = \m. \n. n PRED m
+SUB = \m. \n. n PRED m
 
 -- (a) Comparisons
 --leq
-let leq = \m. \n. IS_ZERO (SUB m n)
+leq = \m. \n. IS_ZERO (SUB n m)
 
 -lt 
-let lt = \m. \n. NOT (leq m n)
+lt = \m. \n. NOT (leq m n)
 
 -- Test cases for (a)
 -- leq 2 3 -> TRUE
@@ -34,10 +34,10 @@ let lt = \m. \n. NOT (leq m n)
 
 -- (b) Integer Division
 -- Call-By-Name Y-combinator for recursion
-let Y = \f. (\x. f (x x)) (\x. f (x x))
+Y = \f. (\x. f (x x)) (\x. f (x x))
 
-let div_rec = \r. \m. \n. (lt m n) ZERO (SUCC (r (SUB m n) n))
-let div = Y div_rec
+div_rec = \r. \m. \n. (lt m n) ZERO (SUCC (r (SUB m n) n))
+div = Y div_rec
 
 -- Test cases for (b)
 -- div 6 3 -> 2 (Church)
@@ -45,10 +45,10 @@ let div = Y div_rec
 -- div 2 5 -> 0 (Church)
 
 -- (c) Filter
-let nil = \c. \n. n
-let cons = \h. \t. \c. \n. c h (t c n)
+nil = \c. \n. n
+cons = \h. \t. \c. \n. c h (t c n)
 
-let filter = \p. \l. l (\h. \t_acc. (p h) (cons h t_acc) t_acc) nil
+filter = \p. \l. l (\h. \t_acc. (p h) (cons h t_acc) t_acc) nil
 
 -- Test case for (c)
 -- keep only elements > 3: \x. lt 3 x
@@ -58,9 +58,9 @@ let filter = \p. \l. l (\h. \t_acc. (p h) (cons h t_acc) t_acc) nil
 -- Exercise 2: Call-by-Name vs Call-by-Value
 -- ==============================================================================
 
-let A = \f. \x. f (f x)
-let B = \x. x
-let W = \x. x x x
+A = \f. \x. f (f x)
+B = \x. x
+W = \x. x x x
 
 -- (a) Divergence
 -- Evaluate: A B (W W)
@@ -88,13 +88,11 @@ let W = \x. x x x
 -- CBN: (\f.\x.f(fx)) (W W) B -> (\x. (W W) ((W W) x)) B -> (W W) ((W W) B) -> Diverges.
 -- CBV: Evaluates (W W) first -> Diverges.
 -- Both diverge here as well. 
--- (If B was meant to be \x.\y.y (FALSE), then A B (W W) would terminate in CBN).
+
 
 -- (b) Wasted work
 -- We need a term G that uses its argument multiple times.
-let G = \x. A x x 
--- Or simply G = \x. x x. Let's use \x. x x.
-let G_waste = \x. x x
+G_waste = \x. x x
 
 -- Test: G_waste (B B)
 -- CBV: evaluates (B B) -> B once. Then applies (\x. x x) to B -> B B -> B. (Argument evaluated ONCE).
@@ -103,13 +101,13 @@ let G_waste = \x. x x
 
 -- (c) Short-circuit evaluation
 -- Standard Church IF evaluates arguments strictly in CBV.
-let IF = \b. \t. \f. b t f
+IF = \b. \t. \f. b t f
 
 -- If we do: IF TRUE (B B) (W W)
 -- In CBV, both (B B) and (W W) are evaluated before IF is called. (W W) diverges. No short-circuit!
 
 -- Short-circuit IF (ifc): We use "thunks" (functions taking a dummy argument) to delay evaluation.
-let ifc = \b. \t_thunk. \f_thunk. b t_thunk f_thunk B
+ifc = \b. \t_thunk. \f_thunk. b t_thunk f_thunk B
 
 -- Demonstration:
 -- t_thunk = \u. B B
