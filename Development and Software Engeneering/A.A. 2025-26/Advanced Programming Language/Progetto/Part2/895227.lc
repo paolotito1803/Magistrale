@@ -19,7 +19,7 @@ SUB = \m. \n. n PRED m
 
 -- (a) Comparisons
 --leq
-leq = \m. \n. IS_ZERO (SUB n m)
+leq = \m. \n. IS_ZERO (SUB m n)
 
 -lt 
 lt = \m. \n. NOT (leq m n)
