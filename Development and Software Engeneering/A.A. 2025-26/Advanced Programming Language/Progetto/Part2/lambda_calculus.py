@@ -143,6 +143,12 @@ class Strategy(Enum):
         - Reduces under lambdas
         - May not terminate even when normal form exists
     
+    NAME: Call-by-name - leftmost outermost, no reduction under lambdas
+        - Lazy evaluation without sharing (like Algol-60)
+        - Substitutes argument unreduced into function body
+        - Stops at WHNF (does NOT reduce under lambdas)
+        - Terminates whenever normal order's WHNF exists
+    
     VALUE: Call-by-value - evaluate arguments before substitution
         - Strict/eager evaluation (like ML, Scheme, Python)
         - Does NOT reduce under lambdas (stops at WHNF)
@@ -155,6 +161,7 @@ class Strategy(Enum):
     """
     NORMAL = "normal"
     APPLICATIVE = "applicative"
+    NAME = "name"
     VALUE = "value"
     FULL = "full"
 
@@ -224,6 +231,26 @@ def reduce_applicative(term: Term) -> Term | None:
             return None
         
         case Var(_):
+            return None
+
+
+def reduce_name(term: Term) -> Term | None:
+    """Call-by-Name: Leftmost outermost. No reduction under lambdas, no reduction of arguments."""
+    match term:
+        case App(Lam(param, body), arg):
+            # Beta reduction: substitute argument as-is, without evaluating it
+            return substitute(body, param, arg)
+        
+        case App(func, arg):
+            # Reduce only the function position; arguments are not reduced
+            # until they become the function part of a redex
+            reduced_func = reduce_name(func)
+            if reduced_func is not None:
+                return App(reduced_func, arg)
+            return None
+        
+        case Lam(_, _) | Var(_):
+            # Do not reduce under lambdas; variables are values
             return None
 
 
@@ -323,13 +350,14 @@ def get_reducer(strategy: Strategy):
     reducers = {
         Strategy.NORMAL: reduce_normal,
         Strategy.APPLICATIVE: reduce_applicative,
+        Strategy.NAME: reduce_name,
         Strategy.VALUE: reduce_value,
         Strategy.FULL: reduce_full,
     }
     return reducers[strategy]
 
 
-def evaluate(term: Term, max_steps: int = 1000, trace: bool = False, 
+def evaluate(term: Term, max_steps: int = 10000, trace: bool = False, 
              strategy: Strategy = Strategy.NORMAL) -> Term:
     """Fully evaluate a term using the specified reduction strategy."""
     reducer = get_reducer(strategy)
@@ -346,7 +374,7 @@ def evaluate(term: Term, max_steps: int = 1000, trace: bool = False,
         next_term = reducer(current)
         if next_term is None:
             if trace:
-                form = "WHNF" if strategy == Strategy.VALUE else "normal form"
+                form = "WHNF" if strategy in (Strategy.VALUE, Strategy.NAME) else "normal form"
                 print(f"  Reached {form} in {steps} steps")
             return current
         current = next_term
@@ -422,6 +450,22 @@ def find_redex_value(term: Term, path: list = None) -> list | None:
             return None
 
 
+def find_redex_name(term: Term, path: list = None) -> list | None:
+    """Find redex for call-by-name strategy (leftmost outermost, no descent under lambdas or into args)."""
+    if path is None:
+        path = []
+    
+    match term:
+        case App(Lam(_, _), _):
+            return path
+        case App(func, _):
+            # Only descend into function position; arguments are not reduced
+            return find_redex_name(func, path + ['func'])
+        case _:
+            # Do not descend under lambdas; variables have no redex
+            return None
+
+
 def find_redex_applicative(term: Term, path: list = None) -> list | None:
     """Find redex for applicative order (leftmost innermost)."""
     if path is None:
@@ -463,6 +507,7 @@ def get_redex_finder(strategy: Strategy):
     finders = {
         Strategy.NORMAL: find_redex_normal,
         Strategy.APPLICATIVE: find_redex_applicative,
+        Strategy.NAME: find_redex_name,
         Strategy.VALUE: find_redex_value,
         Strategy.FULL: find_redex_full,
     }
@@ -808,7 +853,7 @@ def repl():
     print("  :q                    - quit")
     print("  :defs                 - show definitions")
     print("  :del <name>           - delete definition")
-    print("  :strategy <s>         - set strategy (normal/applicative/value/full)")
+    print("  :strategy <s>         - set strategy (normal/applicative/name/value/full)")
     print("  :trace <expr>         - interactive debugger")
     print("  :run <expr>           - show all reduction steps")
     print("  :compare <expr>       - compare strategies")
@@ -816,7 +861,7 @@ def repl():
     print("  :toInt <expr>         - Church numeral to int")
     print("  :load/:save <file>    - load/save definitions")
     print()
-    print(f"Strategies: normal (default), applicative, value, full")
+    print(f"Strategies: normal (default), applicative, name, value, full")
     print(f"Builtins: {', '.join(BUILTINS.keys())}")
     print()
     
