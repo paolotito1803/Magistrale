@@ -27,4 +27,4 @@ myTakeWhile :: (a -> Bool) -> [a] -> [a]
 myTakeWhile p = myfoldr (\x xs -> if p x then x:xs else []) []
 
 mypipe :: [a -> a] -> a -> a
-mypipe = myfoldr 
+mypipe = myfoldr (\f g x -> f (g x)) id
