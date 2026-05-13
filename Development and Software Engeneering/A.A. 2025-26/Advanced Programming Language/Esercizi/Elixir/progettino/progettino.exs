@@ -33,3 +33,7 @@ end
 # Funzione di supporto per rendere il pipe più pulito
 defp spawn_loop(name), do: spawn(fn -> loop(name) end)
 end
+
+# Server di Chat Room 💬: Un processo centrale fa da "stanza". Diversi processi "utente" si collegano, inviano messaggi al server e il server si occupa di inoltrarli (fare broadcast) a tutti gli altri utenti connessi. Imparerai a mantenere uno stato complesso (la lista dei PID degli utenti attivi) all'interno del tuo loop.
+
+# Fabbrica di Lavoratori (Worker Pool) 🏭: Un processo "Manager" riceve una lista di lavori lunghi (es. scaricare 10 finti file o fare calcoli pesanti). Invece di farli uno alla volta, crea 3 o 4 processi "Operaio" e distribuisce il lavoro in parallelo, raccogliendo poi i risultati finali man mano che gli operai finiscono.

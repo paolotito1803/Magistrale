@@ -15,3 +15,7 @@ def csv_filter(category: String, CSV: String): Double = {
     val avg = prices.sum / prices.length
     avg
 }
+
+/*Analizzatore di Portafoglio Finanziario 📈: Leggere più file CSV (es. utenti.csv e transazioni.csv), incrociare i dati (come un JOIN in SQL), raggrupparli per utente con groupBy e calcolare i profitti totali. Questo progetto ti costringerà a gestire anche i dati mancanti o formattati male usando costrutti sicuri come Option.
+
+Analizzatore di Testi e Frequenze 📖: Caricare un intero libro da un file di testo, pulire le frasi dalla punteggiatura, contare quante volte appare ogni singola parola memorizzandola in una Map (dizionario) e infine calcolare e stampare la "Top 10" delle parole più usate.*/
