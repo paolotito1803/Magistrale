@@ -1,16 +1,25 @@
 defmodule Exercise do
 
-  def lift(op, f, g, x) do
+  def lift(op, g, f, x) do
     op.(f.(x), g.(x))
   end
 
-  def lift_all(op, x, fs) do
-    fn -> fs
-    |> Enum.map(fn f -> f.(x) end)
-    |> Enum.reduce(x, op) end
+  def adder(g, f, x) do
+    lift.(&+/2, g, f, x)
   end
 
-  def meet_all(fs) do
-    lift_all(fn a, b -> a && b end, true, fs)
+  def multiplier(g, f, x) do
+    lift.(&*/2, g, f, x)
   end
+
+  def divider(g, f, x) do
+    lift.(&//2, g, f, x)
+  end
+
+  meet_all =
+    fn predicates ->
+      fn x ->
+        Enum.reduce(predicates, true, fn p, acc -> acc and p.(x) end)
+      end
+    end
 end
