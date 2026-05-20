@@ -6,3 +6,10 @@ isEven:: Int -> Bool
     triple = (* 3)
     addTen = (+ 10)
     isEven (== 0) . (mod 2)
+
+    triple :: Int -> Int
+    triple (* 3)
+    addTen :: Int -> Int
+    addTen (+ 10)
+    isEven :: Int -> Bool
+    isEven (== 0) . (mod 2)
