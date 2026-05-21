@@ -5,3 +5,15 @@ def countdown(n: Int): List[Int] = n match {
   // Caso ricorsivo: aggiungi n in testa alla lista creata chiamando countdown(n-1)
   case _ => n :: countdown(n - 1)
 }
+
+def countdown(n: Int): List[Int] = {
+  if (n < 0){
+    "input non valido"
+  }
+  else if(n == 0){
+    Nil
+  }
+  else{
+    n :: countdown(n - 1)
+  }
+}
