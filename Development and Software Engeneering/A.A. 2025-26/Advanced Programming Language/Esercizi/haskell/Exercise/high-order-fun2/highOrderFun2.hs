@@ -1,8 +1,18 @@
 negateAll :: [Int] -> [Int]
 negateAll = map negate
 
+negateAll :: [Int] -> [Int]
+negateAll = map negate
+negateAll = map (*(-1))
+
 longWords :: [String] -> [String]
 longWords = filter ((> 4) . length)
+
+longWords :: [String] -> [String]
+longWords = filter ((> 4) . length)
+
+countEven :: [Int] -> Int
+countEven = length . (filter even)
 
 countEven :: [Int] -> Int
 countEven = length . (filter even)
@@ -10,8 +20,14 @@ countEven = length . (filter even)
 myflip :: (a -> b -> c) -> b -> a -> c
 myflip f x y = f y x
 
+myflip :: (a -> b -> c) -> b -> a -> c
+myflip f x y = f y x
+
 prepend :: [a] -> a -> [a]
 prepend xs x = myflip (++) [x] xs
+
+prepend :: [a] -> a -> [a]
+prepend xs x = [x] ++ xs
 
 reverse :: [a] -> [a]
 reverse = foldl (flip (:)) []
