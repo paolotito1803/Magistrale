@@ -2779,3 +2779,13 @@ AVVERTENZA: Unmatched cancel notification for request id 3871
 2026.05.26 11:01:34 INFO  no build target found for D:\Progetti\Magistrale\Development and Software Engeneering\A.A. 2025-26\Advanced Programming Language\Esercizi\Scala\src\main\scala\Encapsulation\Encapsulation.scala. Using presentation compiler with project's scala-library version: 3.3.7
 2026.05.26 11:01:36 WARN  no build target for: D:\Progetti\Magistrale\Development and Software Engeneering\A.A. 2025-26\Advanced Programming Language\Esercizi\Scala\src\main\scala\Encapsulation\Encapsulation.scala
 2026.05.26 11:01:36 INFO  no build target found for D:\Progetti\Magistrale\Development and Software Engeneering\A.A. 2025-26\Advanced Programming Language\Esercizi\Scala\src\main\scala\Encapsulation\Encapsulation.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.05.26 11:03:02 INFO  Shutting down server
+2026.05.26 11:03:02 INFO  Memory monitor stopped
+2026.05.26 11:03:02 INFO  shutting down Metals
+2026.05.26 11:03:02 INFO  Exiting server
+2026.05.27 13:17:23 INFO  Started: Metals version 1.6.7 in folders 'D:\Progetti\Magistrale\Development and Software Engeneering\A.A. 2025-26\Advanced Programming Language\Esercizi' for client Visual Studio Code 1.121.0.
+2026.05.27 13:17:23 INFO  Memory monitor started
+2026.05.27 13:17:25 WARN  Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026.05.27 13:17:25 INFO  no build target found for D:\Progetti\Magistrale\Development and Software Engeneering\A.A. 2025-26\Advanced Programming Language\Esercizi\Scala\src\main\scala\Encapsulation\Encapsulation.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.05.27 13:17:32 INFO  no build target found for D:\Progetti\Magistrale\Development and Software Engeneering\A.A. 2025-26\Advanced Programming Language\Esercizi\Scala\src\main\scala\Encapsulation\Encapsulation.scala. Using presentation compiler with project's scala-library version: 3.3.7
+2026.05.27 13:26:17 INFO  no build target found for D:\Progetti\Magistrale\Development and Software Engeneering\A.A. 2025-26\Advanced Programming Language\Esercizi\Scala\src\main\scala\Encapsulation\Encapsulation.scala. Using presentation compiler with project's scala-library version: 3.3.7
