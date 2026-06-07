@@ -1,28 +1,37 @@
-module Wallet (Wallet, Money, emptyWallet, mint, spend, validity, balance) where
-    data Wallet = {spend :: [Money], unspend :: [Money], next :: Int}
-    data Money = {id :: Int, amount :: Int}
+module Wallet (Wallet, Money, empty, mint, spend, verify) where
+    
+    data Wallet = MkWallet {spent :: [Money], unspent :: [Money], next :: Int}
+    data Money = MkMoney{idMoney :: Int, amount :: Int}
 
-emptyWallet :: Wallet
-emptyWallet = MkWallet [] [] 0
+    empty :: Wallet
+    empty = MkWallet [] [] 0
 
-mint :: Wallet -> Int -> (Wallet, Money)
-mint w amount = 
-    let m = MkMoney (next w) amount
-        w' = w (next = next w + 1)
-    in (w', m)
+    mint :: Wallet -> Int -> (Wallet, Money)
+    mint w cash = 
+        let s = spent w
+            u = unspent w
+            n = next w
+            m = MkMoney n cash
+            w' = MkWallet s (m : u) (n + 1)
+        in (w', m)
 
-spend :: Wallet -> Money -> Either String (Wallet, Int)
-spend (MkWallet u s next) m = 
-    let id = id m
-    in case break (\m' -> id m' = id) u of
-        (before, found : after) -> Right(MkWallet (before ++ after) (found :: s) next, amount found)
-        _ ->
-            if any (\m' -> id m' == id) s
-                then Left "already spent"
-                else Left "not found"
+    spend :: Wallet -> Money -> Either String (Wallet, Int)
+    spend w m =
+        let moneyId = idMoney m
+            s = spent w
+            u = unspent w
+            n = next w
+        in case break (\m' -> idMoney m' == moneyId) u of
+            (before, found : after) -> Right (MkWallet (before ++ after) (found : s) n, amount found)
+            _ ->
+                any (\m' -> idMoney m' == moneyId) s
+                    then Left "already spent"
+                    else Left "unknown token"
 
-validity :: Wallet -> Money -> Bool
-verify (MkWallet (u _ _)) m = any (\m' -> id m' == id m) u
-
-balance :: Wallet -> Int
-balance MkWallet {unspent = u} = (sum . map amount) u
+    verify :: Wallet -> Money -> Bool
+    verify w m = 
+        let u = unspent w
+        id = idMoney m
+        in case break (\m' -> idMoney m' == id) u of
+            (before, found : after) -> True
+            _ -> False  

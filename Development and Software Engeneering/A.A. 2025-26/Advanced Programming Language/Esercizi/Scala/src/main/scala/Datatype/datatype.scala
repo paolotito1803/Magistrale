@@ -102,10 +102,11 @@ class Ledger(val txs : List[Transaction]):
 
     def txInRange(lo : Int, hi : Int) : Ledger = new Ledger(txs.filter(tx => tx.timestamp >= lo && tx.timestamp <= hi))
 
-    def groupByKind: Map[String, List[Transaction]] = txs.groupBy {
-        case _: Transfer => "Transfer"
-        case _: ContractDeploy => "ContractDeploy"
-        case _: ContractCall => "ContractCall"
-    }
+    def groupByKind(txs: List[Transaction]) : (List[Transaction], List[Transaction], List[Transaction]) =
+        txs.foldRight((List.empty[Transaction], List.empty[Transaction], List.empty[Transaction])):
+        case (t: Transfer,       
+        (ts, ds, cs)) => (t :: ts, ds, cs)
+        case (t: ContractDeploy, (ts, ds, cs)) => (ts, t :: ds, cs)
+        case (t: ContractCall,   (ts, ds, cs)) => (ts, ds, t :: cs)
 
     
