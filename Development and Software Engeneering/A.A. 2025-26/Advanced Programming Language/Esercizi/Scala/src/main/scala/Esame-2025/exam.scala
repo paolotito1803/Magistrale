@@ -23,8 +23,9 @@ val bookRepresentation: XmlNode =
 
   def intToXML(i: int): XmlNode = XmlElement("int", children = List(XmlText(i.toString)))
   def stringToXML(s: String): XmlNode = XmlElement("string", children = List(XmlText(s)))
-  def intsToXML(list: List[Int]): XmlNode = XmlElement("ints", children = list.map(l => intToXML(l)))
-  def stringsToXML(list: List[String]): XmlNode = XmlElement("strings", children = list.map(l => stringToXML(l)))
+  
+  def intsToXML(list: List[Int]): XmlNode = XmlElement(name = "ints", attributes = Nil, children = List(list.map(l => intToXML(l))))
+  def stringsToXML(list: List[String]): XmlNode = XmlElement(name = "strings", attributes = Nil, children = List(list.map(l => stringToXML(l)))) 
 
   case class Country(name: String, state: String)
   case class Person(name: String, age: Int, country: Country)
@@ -78,6 +79,7 @@ given Export[Product] with
     def toJson(p: Product): String = s"""{"code": "${p.code}", "price": ${p.price}}"""
 
 def exportAll[T: Export](data: List[T], format: String): List[String] = format match {
-    case "csv" => data.map(item => summon[Export[T]].toCsv(item))
-    case "json" => data.map(item => summon[Export[T]].toJson(item))
+    case "CSV" => data.map(i => summon[Export[T]].toCsv(i))
+    case "JSON" => data.map(i => summon[Export[T]].toJson(i))
+    case _ => throw new IllegalArgumentException("error type argument format")
 }
