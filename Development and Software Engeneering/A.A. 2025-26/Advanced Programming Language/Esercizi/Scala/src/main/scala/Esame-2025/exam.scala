@@ -24,8 +24,8 @@ val bookRepresentation: XmlNode =
   def intToXML(i: int): XmlNode = XmlElement("int", children = List(XmlText(i.toString)))
   def stringToXML(s: String): XmlNode = XmlElement("string", children = List(XmlText(s)))
   
-  def intsToXML(list: List[Int]): XmlNode = XmlElement(name = "ints", attributes = Nil, children = List(list.map(l => intToXML(l))))
-  def stringsToXML(list: List[String]): XmlNode = XmlElement(name = "strings", attributes = Nil, children = List(list.map(l => stringToXML(l)))) 
+  def intsToXML(list: List[Int]): XmlNode = XmlElement(name = "ints", attributes = Nil, children = list.map(l => intToXML(l)))
+  def stringsToXML(list: List[String]): XmlNode = XmlElement(name = "strings", attributes = Nil, children = list.map(l => stringToXML(l)))
 
   case class Country(name: String, state: String)
   case class Person(name: String, age: Int, country: Country)
@@ -44,16 +44,24 @@ val bookRepresentation: XmlNode =
     children = List(
         XmlElement("name", Nil, List(XmlText(p.name))),
         XmlElement("age", Nil, List(XmlText(p.age.toString))),
-        XmlElement(
+        /*XmlElement(
             name = "country",
             attributes = Nil,
             children = List(
                 XmlElement("name", Nil, children = List(XmlText(p.country.name))),
                 XmlElement("state", Nil, children = List(XmlText(p.country.state)))
             )
-        )
+        )*/
+        countryToXML(person.country)
     ) 
   )
+
+  def ReduceRight[A](f: (A, A) => A, l: List[A]): A = l match {
+    case Nil => throw new UnsupportedOperationException("ReduceRight on an empty list"),
+    case x :: Nil
+    case x :: Nil => x,
+    case x :: xs => f(x, ReduceRight(f, xs))
+  }
 
   def maxElem(list: List[Int]): Int = 
     reduceRight[Int]((x, y) => if x > y then x else y)(list)

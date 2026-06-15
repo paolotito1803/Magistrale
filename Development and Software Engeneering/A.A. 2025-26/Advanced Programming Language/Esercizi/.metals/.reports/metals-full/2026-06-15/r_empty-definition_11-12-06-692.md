@@ -1,0 +1,110 @@
+error id: file:///D:/Progetti/Magistrale/Development%20and%20Software%20Engeneering/A.A.%202025-26/Advanced%20Programming%20Language/Esercizi/Scala/src/main/scala/Esame-2025/exam.scala:scala/package.List.
+file:///D:/Progetti/Magistrale/Development%20and%20Software%20Engeneering/A.A.%202025-26/Advanced%20Programming%20Language/Esercizi/Scala/src/main/scala/Esame-2025/exam.scala
+empty definition using pc, found symbol in pc: scala/package.List.
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+
+offset: 810
+uri: file:///D:/Progetti/Magistrale/Development%20and%20Software%20Engeneering/A.A.%202025-26/Advanced%20Programming%20Language/Esercizi/Scala/src/main/scala/Esame-2025/exam.scala
+text:
+```scala
+enum XmlNode:
+    case XmlText(text: String)
+    case XmlAttribute(key: String, value: String)
+    case class XmlElement(name: String, attributes: List[XmlAttribute] = Nil, children: List[XmlNode] = Nil)
+
+val bookRepresentation: XmlNode = 
+  XmlElement(
+    name = "book",
+    attributes = List(XmlAttribute("id", "b101")),
+    children = List(
+      XmlElement(
+        name = "title", 
+        attributes = Nil, 
+        children = List(XmlText("Programming in Scala"))
+      ),
+      XmlElement(
+        name = "author", 
+        attributes = Nil, 
+        children = List(XmlText("Martin Odersky"))
+      )
+    )
+  )
+
+  def intToXML(i: int): XmlNode = XmlElement("int", children = List(XmlText(i.toString)))
+  def stringToXML(s: String): XmlNode = XmlElement("string", children = Li@@st(XmlText(s)))
+  
+  def intsToXML(list: List[Int]): XmlNode = XmlElement(name = "ints", attributes = Nil, children = list.map(l => intToXML(l)))
+  def stringsToXML(list: List[String]): XmlNode = XmlElement(name = "strings", attributes = Nil, children = list.map(l => stringToXML(l)))
+
+  case class Country(name: String, state: String)
+  case class Person(name: String, age: Int, country: Country)
+
+  def countryToXML(c: Country): XmlNode = XmlElement(
+    name = "country",
+    attributes = Nil,
+    children = List(
+      XmlElement("name", Nil, List(XmlText(c.name))),
+      XmlElement("state", Nil, List(XmlText(c.state)))
+    )
+)
+  def personToXML(p: Person): XmlNode = XmlElement(
+    name = "Person",
+    attributes = Nil,
+    children = List(
+        XmlElement("name", Nil, List(XmlText(p.name))),
+        XmlElement("age", Nil, List(XmlText(p.age.toString))),
+        /*XmlElement(
+            name = "country",
+            attributes = Nil,
+            children = List(
+                XmlElement("name", Nil, children = List(XmlText(p.country.name))),
+                XmlElement("state", Nil, children = List(XmlText(p.country.state)))
+            )
+        )*/
+        countryToXML(person.country)
+    ) 
+  )
+
+  def ReduceRight[A](f: (A, A) => A, l: List[A]): A = l match {
+    case Nil => throw new UnsupportedOperationException("ReduceRight on an empty list"),
+    case x :: Nil
+    case x :: Nil => x,
+    case x :: xs => f(x, ReduceRight(f, xs))
+  }
+
+  def maxElem(list: List[Int]): Int = 
+    reduceRight[Int]((x, y) => if x > y then x else y)(list)
+
+case class Customer(name: String, email: String)
+case class Invoice(id: Int, amount: Double)
+case class Product(code: String, price: Double)
+
+trait Export[T]:
+    def toCsv(t: T): String
+    def toJson(t: T): String
+
+given Export[Customer] with
+    def toCsv(t: Customer): String = s"${t.name}, ${t.email}"
+    def toJson(t: Customer): String = s"""{"name": "${t.name}", "email": "${t.email}"}"""
+
+given Export[Invoice] with
+    def toCsv(i: Invoice): String = s"${i.id},${i.amount}"
+    def toJson(i: Invoice): String = s"""{"id": ${i.id}, "amount": ${i.amount}}"""
+
+given Export[Product] with
+    def toCsv(p: Product): String = s"${p.code},${p.price}"
+    def toJson(p: Product): String = s"""{"code": "${p.code}", "price": ${p.price}}"""
+
+def exportAll[T: Export](data: List[T], format: String): List[String] = format match {
+    case "CSV" => data.map(i => summon[Export[T]].toCsv(i))
+    case "JSON" => data.map(i => summon[Export[T]].toJson(i))
+    case _ => throw new IllegalArgumentException("error type argument format")
+}
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: scala/package.List.
