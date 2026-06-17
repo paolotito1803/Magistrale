@@ -1,5 +1,36 @@
 object Wallets:
     opaque type Wallet = (List[Money], List[Money], Int)
+    opaque type Money = (Int, Double)
+
+    def empty: Wallet = (List.empty, List.empty, 0)
+
+    def mint(w: Wallet, amount: Double): (Wallet, Money) = {
+        let (u, s, n) = w 
+        val m: Money = (n, amount)
+        val w2: Wallet = (m :: u s n + 1)
+        (w2, m)
+    }
+
+    def spend(w: Wallet, m: Money): Either[String, (Wallet, Double)] = {
+        let (u, s, n) = w 
+        let (id, amount) = m
+        u.find(_._1 == id) match 
+            case Some(found) => 
+                u2 = u.filterNot(_._1 == id)
+                w2 = (u2 found :: s n)
+                Right(w2, found._2)
+            case None =>
+                if s.exists(_._1 == id) then Left("already spent") else Left("not found")
+    }
+
+    def verify(w: Wallet, m: Money): Boolean = {
+        let (u, s, n) = w 
+        let (id, amount) = m
+        if u.exists(_._1 == id) then True else False
+    }
+
+/*object Wallets:
+    opaque type Wallet = (List[Money], List[Money], Int)
     opaque type Money = (Int, Int)
 
     def empty: Wallet = (List.empty, List.empty, 0)
@@ -27,4 +58,4 @@ object Wallets:
             u.exists(_._1 == m._1)
         }
         
-    }
+    }*/
