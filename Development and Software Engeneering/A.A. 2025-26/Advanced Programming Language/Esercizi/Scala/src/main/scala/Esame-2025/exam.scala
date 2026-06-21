@@ -58,7 +58,6 @@ val bookRepresentation: XmlNode =
 
   def ReduceRight[A](f: (A, A) => A, l: List[A]): A = l match {
     case Nil => throw new UnsupportedOperationException("ReduceRight on an empty list"),
-    case x :: Nil
     case x :: Nil => x,
     case x :: xs => f(x, ReduceRight(f, xs))
   }

@@ -2,7 +2,7 @@ trait Mergable[A]:
     def merge(that: A): A
 
 case class Counter(value: Int) extends Mergable[Counter]:
-    def merge(that: Counter): Counter = Counter(this.value + that.vale)
+    def merge(that: Counter): Counter = Counter(this.value + that.value)
 
 case class  Log(entries: List[String]) extends Mergable[Log]:
     def merge(that: Log): LLog = {
