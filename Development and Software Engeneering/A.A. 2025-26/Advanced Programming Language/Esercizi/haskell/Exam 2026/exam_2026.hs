@@ -6,11 +6,11 @@ countAbove t (x:xs) = if t > x then 1 + countAbove t xs
 
 longestRunAbove :: Int -> [Int] -> Int
 longestRunAbove _ [] = 0
-longestRunAbove t (x:xs) = helper (x:xsx) 0 0
+longestRunAbove t (x:xs) = helper t (x:xsx) 0 0
 
-helper :: [Int] -> Int -> Int -> Int
-helper [] max pos = if pos > max then pos else max
-helper (x:xs) max pos = if x > t then helper xs max (pos + 1) else if pos > max then helper xs pos 0
+helper :: Int -> [Int] -> Int -> Int -> Int
+helper t [] max pos = if pos > max then pos else max
+helper t (x:xs) max pos = if x > t then helper t xs max (pos + 1) else if pos > max then helper t xs pos 0
 
 -- ex2
 --a alpha perchè dipende dal tipo di ritonro di f e da cosa accetta in input, beta per motivo analogo
